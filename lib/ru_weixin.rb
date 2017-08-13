@@ -1,5 +1,7 @@
 require "ru_weixin/version"
 
 module RuWeixin
-  # Your code goes here...
+  class << self
+    attr_accessor :app_id, :secret
+  end
 end
