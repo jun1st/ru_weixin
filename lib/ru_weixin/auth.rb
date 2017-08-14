@@ -12,7 +12,7 @@ module RuWeixin
         "#{RuWeixin::Auth::BASE_PATH}?appid=#{RuWeixin.app_id}&redirect_url=#{redirect_url}&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect"
       end
 
-      def authorize_url
+      def authorize_url(redirect_url)
         "#{RuWeixin::Auth::BASE_PATH}?appid=#{RuWeixin.app_id}&redirect_uri=#{redirect_url}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect"
       end
 
