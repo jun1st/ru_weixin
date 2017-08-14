@@ -1,4 +1,5 @@
 require "ru_weixin/version"
+require 'ru_weixin/auth'
 
 module RuWeixin
   class << self
