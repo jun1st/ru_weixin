@@ -16,16 +16,16 @@ module RuWeixin
         "#{RuWeixin::Auth::BASE_PATH}?appid=#{app_id}&redirect_uri=#{redirect_url}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect"
       end
 
-      def access_token_url(code)
-        "#{RuWeixin::Auth::SNS_BASE}/oauth2/access_token?appid=#{RuWeixin.app_id}&secret=#{RuWeixin.secret}&code=#{code}&grant_type=authorization_code"
+      def access_token_url(code, app_id = RuWeixin.app_id, secret = RuWeixin.secret)
+        "#{RuWeixin::Auth::SNS_BASE}/oauth2/access_token?appid=#{app_id}&secret=#{secret}&code=#{code}&grant_type=authorization_code"
       end
 
       def user_profile_url(access_token, open_id)
         "#{RuWeixin::Auth::SNS_BASE}/userinfo?access_token=#{access_token}&openid=#{open_id}&lang=zh_CN"
       end
 
-      def access_token
-        response = open("#{RuWeixin::Auth::API_BASE}/token?grant_type=client_credential&appid=#{RuWeixin.app_id}&secret=#{RuWeixin.secret}").read
+      def access_token(app_id = RuWeixin.app_id, secret = RuWeixin.secret)
+        response = open("#{RuWeixin::Auth::API_BASE}/token?grant_type=client_credential&appid=#{app_id}&secret=#{secret}").read
         json = JSON.parse(response)
         json['access_token']
       end
@@ -36,14 +36,14 @@ module RuWeixin
         json['ticket']
       end
 
-      def js_sign_package(url, ticket)
+      def js_sign_package(url, ticket, app_id = RuWeixin.app_id)
         timestamp = Time.now.to_i
         noncestr = SecureRandom.hex(16)
         str = "jsapi_ticket=#{ticket}&noncestr=#{noncestr}&timestamp=#{timestamp}&url=#{url}"
 
         signature = Digest::SHA1.hexdigest(str)
         {
-          appId: RuWeixin.app_id,
+          appId: app_id,
           nonceStr: noncestr,
           timestamp: timestamp,
           url: url,
