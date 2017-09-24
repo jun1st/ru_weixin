@@ -15,7 +15,7 @@ module RuWeixin
             secret = app[:secret]
           end
         end
-        response = open("#{RuWeixin::Auth::API_BASE}/token?grant_type=client_credential&appid=#{app_id}&secret=#{secret}").read
+        response = open("#{BASE_PATH}/token?grant_type=client_credential&appid=#{app_id}&secret=#{secret}").read
         json = JSON.parse(response)
         json['access_token']
       end
