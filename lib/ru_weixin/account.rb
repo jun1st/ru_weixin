@@ -1,3 +1,5 @@
+require 'open-uri'
+
 module RuWeixin
   module Account
     BASE_PATH = 'https://api.weixin.qq.com/cgi-bin'.freeze
