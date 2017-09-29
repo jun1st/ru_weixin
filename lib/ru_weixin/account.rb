@@ -5,7 +5,7 @@ module RuWeixin
     BASE_PATH = 'https://api.weixin.qq.com/cgi-bin'.freeze
 
     class << self
-      def access_token(app_name = nil)
+      def get_access_token(app_name = nil)
         app_id = RuWeixin.app_id
         secret = RuWeixin.secret
         if app_name && RuWeixin.stores
@@ -15,12 +15,16 @@ module RuWeixin
             secret = app[:secret]
           end
         end
-        response = open("#{RuWeixin::Account::BASE_PATH}/token?grant_type=client_credential&appid=#{app_id}&secret=#{secret}").read
-        json = JSON.parse(response)
-        json['access_token']
+
+        RuWeixin.cache.fetch "#{app_id}_access_token", expires_in: 7100 do
+          response = open("#{RuWeixin::Account::BASE_PATH}/token?grant_type=client_credential&appid=#{app_id}&secret=#{secret}").read
+          json = JSON.parse(response)
+          json['access_token']
+        end
       end
 
-      def get_user(open_id, access_token)
+      def get_user(open_id, app_name = nil)
+        access_token = get_access_token(app_name)
         url = "#{RuWeixin::Account::BASE_PATH}/user/info?access_token=#{access_token}&openid=#{open_id}&lang=zh_CN"
         response = open(url).read
         JSON.parse(response)

@@ -4,6 +4,6 @@ require 'ru_weixin/account'
 
 module RuWeixin
   class << self
-    attr_accessor :app_id, :secret, :stores
+    attr_accessor :app_id, :secret, :stores, :cache
   end
 end
