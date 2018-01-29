@@ -1,8 +1,11 @@
 require 'open-uri'
+require 'base64'
+require 'openssl'
 
 module RuWeixin
   module Account
     BASE_PATH = 'https://api.weixin.qq.com/cgi-bin'.freeze
+    USER_PATH = 'https://api.weixin.qq.com/sns'
 
     class << self
       def get_access_token(app_name = nil)
@@ -28,6 +31,28 @@ module RuWeixin
         url = "#{RuWeixin::Account::BASE_PATH}/user/info?access_token=#{access_token}&openid=#{open_id}&lang=zh_CN"
         response = open(url).read
         JSON.parse(response)
+      end
+
+      def get_session_key(app_id, secret, code)
+        url = "#{RuWeixin::Account::USER_PATH}/jscode2session?appid=#{app_id}&secret=#{secret}&js_code=#{code}&grant_type=authorization_code"
+        response = open(url).read
+        JSON.parse(response)
+      end
+
+      def decryptData(session_key, iv, encryptedData)
+        aesKey = Base64.decode(session_key)
+        d_iv = Base64.decode(iv)
+        data = Base64.decode(encryptedData)
+
+        cipher = OpenSSL::Cipher::AES.new(128, :CBC)
+        cipher.decrypt
+        cipher.padding = 0
+        cipher.key = aesKey
+        cipher.iv = d_iv
+        data = cipher.update(encrypted_data) << cipher.final
+        result = JSON.parse(data)
+
+        result
       end
     end
   end
