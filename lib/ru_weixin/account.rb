@@ -39,10 +39,10 @@ module RuWeixin
         JSON.parse(response)
       end
 
-      def decryptData(session_key, iv, encryptedData)
+      def decrypt_data(session_key, iv, encrypted_data)
         aesKey = Base64.decode(session_key)
         d_iv = Base64.decode(iv)
-        data = Base64.decode(encryptedData)
+        data = Base64.decode(encrypted_data)
         cipher = OpenSSL::Cipher::AES.new(128, :CBC)
         cipher.decrypt
         cipher.key = aesKey
