@@ -43,16 +43,11 @@ module RuWeixin
         aesKey = Base64.decode(session_key)
         d_iv = Base64.decode(iv)
         data = Base64.decode(encryptedData)
-
         cipher = OpenSSL::Cipher::AES.new(128, :CBC)
         cipher.decrypt
-        cipher.padding = 0
         cipher.key = aesKey
         cipher.iv = d_iv
-        data = cipher.update(encrypted_data) << cipher.final
-        result = JSON.parse(data)
-
-        result
+        cipher.update(data) + cipher.final
       end
     end
   end
